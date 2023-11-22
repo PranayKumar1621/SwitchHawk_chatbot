@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatbot</title>
+</head>
+<body>
+  <h1>Chatbot Interface</h1>
+  <input type="text" id="userInput" placeholder="Type your message...">
+  <button onclick="sendMessage()">Send</button>
+  
+  <div id="responseDisplay">
+    <!-- Chatbot responses will appear here -->
+  </div>
+
+  <script>
+    function sendMessage() {
+      const userInput = document.getElementById('userInput').value;
+      const responseDisplay = document.getElementById('responseDisplay');
+      
+      // Display user message in the response area
+      responseDisplay.innerHTML += `<p>User: ${userInput}</p>`;
+      
+      // Make an API call to your Flask server
+      fetch('http://127.0.0.1:5000/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: userInput }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Display chatbot response in the response area
+        responseDisplay.innerHTML += `<p>Chatbot: ${data.response}</p>`;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        responseDisplay.innerHTML += `<p>Error: ${error.message}</p>`;
+      });
+
+      // Clear the user input field
+      document.getElementById('userInput').value = '';
+    }
+  </script>
+</body>
+</html>
+
